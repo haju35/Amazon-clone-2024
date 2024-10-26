@@ -1,13 +1,12 @@
 import './App.css';
-import Header from './Components/Header/Header';
-import Carousel from './Components/Carousel/Carousel';
+import Routing from './Router.jsx'
+
 
 
 function App() {
   return (
     <>
-      <Header/>
-      <Carousel/>
+      <Routing/>
     </>
   );
 }
