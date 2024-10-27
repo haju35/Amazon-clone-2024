@@ -14,7 +14,8 @@ const Header = () => {
           <div className={classes.header_container}>
             <div className={classes.logo_container}>
               <Link to="/">
-                <img src='https://pngimg.com/uploLinkds/amazon/amazon_PNG11.png' alt='amazon-logo' />
+              <img src='https://pngimg.com/uploads/amazon/amazon_PNG11.png' alt='amazon-logo' />
+
               </Link>
               <span>
               <SlLocationPin />
@@ -56,7 +57,7 @@ const Header = () => {
             </Link>
             
             <Link to="/cart" className={classes.cart}>
-            <BiCart size={35}/>
+            <BiCart size={35} />
             <span>0</span>
             </Link>
 
