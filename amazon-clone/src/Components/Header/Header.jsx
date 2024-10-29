@@ -62,11 +62,13 @@ const Header = () => {
               <p>returns</p>
               <span>&Orders</span>
             </Link>
-            
+            <div>
             <Link to="/cart" className={classes.cart}>
             <BiCart size={35} />
             <span>{totalItem}</span>
             </Link>
+            <span className="cart-text">Cart</span>
+            </div>
 
           </div>
           </div>
