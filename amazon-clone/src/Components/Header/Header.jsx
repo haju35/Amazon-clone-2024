@@ -51,7 +51,7 @@ const Header = () => {
               </select>
               </a>
             </div>
-            <Link to='/Sign In'>
+            <Link to='/SignIn'>
             <div>
               <p className="p">Sign In</p>
               <span className="span">Account & Lists</span>
