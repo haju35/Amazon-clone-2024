@@ -7,6 +7,8 @@ import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
 import CurrencyFormat from '../../Components/CurrencyFormat/CurrencyFormat'
 import { axiosInstance } from '../../API/axios'
 import {ClipLoader} from "react-spinners";
+import {db} from "../../Utility/firebase"
+import {useNavigate} from "react-router-dom";
 
 function Payment() {
   const[{user,basket}] = useContext(DataContext)
@@ -23,6 +25,7 @@ function Payment() {
 
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
 
   const handleChange = (e)=>{
     console.log(e);
@@ -33,26 +36,39 @@ function Payment() {
     e.preventDefault()
 
     try{
-      setProcessing(true)
+      setProcessing(true);
         //backend contact to get the client secret
       const response = await axiosInstance({
       method: "post",
       url:`/payment/create?total=${total*100}`
     })
 
-    //console.log(response.data)
+    console.log(response.data)
     const clientSecret = response.data?.clientSecret;
 
     //2.client side(react side confirmation)
-    const paymentIntent = await stripe.confirmCardPayment(clientSecret,{
-      payment_Method:{
-        card:elements.getElement(CardElement),
+    const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
       },
     });
+
     //console.log(paymentIntent)
 
     //3.after the confirmation -->order firestore db save ,clear basket
+  
+    await db
+    .collection("users")
+    .doc(user.uid)
+    .collection("orders")
+    .doc(paymentIntent.id)
+    .set({
+      basket:basket,
+      amount:paymentIntent.amount,
+      created:paymentIntent.created
+    })
     setProcessing(false)
+    navigate("/orders" , {state:{msg:"you have placed new order"}})
     }catch(error){
        console.log(error)
        setProcessing(false)
@@ -73,7 +89,7 @@ function Payment() {
         <h3>Delivery Address</h3>
         <div className="div">
         <div>{user ? user.email : "Email not available"}</div>
-        <div>Arbaminch</div>
+        <div>Arba Minch</div>
         <div>Ethiopia</div>
         </div>
       </div>
@@ -106,7 +122,8 @@ function Payment() {
   </span>
   <div className="div">
     <button type="submit">
-      {processing ? (
+      {
+      processing ? (
         <div className={classes.loading}>
           <ClipLoader color="gray" size={12} />
           <>please wait...</>
