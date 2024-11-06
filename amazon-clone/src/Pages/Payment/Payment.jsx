@@ -9,9 +9,10 @@ import { axiosInstance } from '../../API/axios'
 import {ClipLoader} from "react-spinners";
 import {db} from "../../Utility/firebase"
 import {useNavigate} from "react-router-dom";
+import {Type} from '../../Utility/action.type'
 
 function Payment() {
-  const[{user,basket}] = useContext(DataContext)
+  const[{user,basket},dispatch] = useContext(DataContext)
   const totalItem = basket?.reduce((amount,item)=>{
     return item.amount+amount;
   },0);
@@ -26,6 +27,7 @@ function Payment() {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+
 
   const handleChange = (e)=>{
     console.log(e);
@@ -67,6 +69,9 @@ function Payment() {
       amount:paymentIntent.amount,
       created:paymentIntent.created
     })
+
+    //empty the basket
+    dispatch({type:Type.EMPTY_BASKET})
     setProcessing(false)
     navigate("/orders" , {state:{msg:"you have placed new order"}})
     }catch(error){
@@ -89,7 +94,7 @@ function Payment() {
         <h3>Delivery Address</h3>
         <div className="div">
         <div>{user ? user.email : "Email not available"}</div>
-        <div>Arba Minch</div>
+        <div>ArbaMinch</div>
         <div>Ethiopia</div>
         </div>
       </div>
